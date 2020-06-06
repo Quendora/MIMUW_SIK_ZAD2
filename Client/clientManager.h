@@ -40,9 +40,9 @@ class ClientManager {
     void addNewServer(const std::shared_ptr<MessageClient>& mess);
     void validateAndWriteOutput(const std::shared_ptr<MessageClient>& mess);
     bool validateAndSetMetadata(const std::shared_ptr<MessageClient>& mess);
-    void updateTimeouts(double lastTime);
+    void updateTimeouts(int lastTime);
     int getCurrTime();
-    void updateKeepalive(double lastTime);
+    void updateKeepalive(int lastTime);
     void handleTelnetError();
     void lookForServers();
 };

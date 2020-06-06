@@ -20,7 +20,7 @@ ServerManager::ServerManager(const std::shared_ptr<ParserServer>& parser,
     this->metaInt = shoutcast->GetMetaInt();
     this->clientTimeout = stoi(parser->getValueOfFlag(TIMEOUT_FLAG_B)) * 1000;
     this->radioTimeout = stoi(parser->getValueOfFlag(TIMEOUT_FLAG_A)) * 1000;
-    this->radioTimestamp = getCurrTime();
+    this->radioCurrTimeout = radioTimeout;
     this->shoutcast = shoutcast;
     this->multi = parser->checkIfFlagExists(MULTI_FLAG);
     this->radioMetadata = new MessageServer(METADATA_T, MAX_METADATA_LENGTH);
@@ -115,24 +115,29 @@ void ServerManager::makeSocket(const std::string& port) {
 }
 
 void ServerManager::handleClients(int *finish) {
+    int ret, startPollTime;
+
     while (!(*finish)) {
         radioState sendRadioMess = NO_CHANGE_NO_SEND;
 
-        int ret = poll(fds, 2, radioTimeout);
-        if (ret <= 0 || !checkTimeout(radioTimestamp, radioTimeout)) {
+        startPollTime = getCurrTime();
+        ret = poll(fds, 2, radioCurrTimeout);
+        if (ret <= 0) {
             handleError();
             if (ret < 0 && errno == EINTR) continue;
             if (ret < 0) syserr("poll error");
             else syserr("shoutcast timeout");
         }
 
+        int timeDifference = getCurrTime() - startPollTime;
+        radioCurrTimeout = std::max(0, radioCurrTimeout - timeDifference);
+
         if (fds[0].revents & POLLIN) {
             fds[0].revents = 0;
 
             sendRadioMess = handleRadio();
-            radioTimestamp = getCurrTime();
+            radioCurrTimeout = radioTimeout;
         }
-
         if (fds[1].revents & POLLIN) {
             fds[1].revents = 0;
 

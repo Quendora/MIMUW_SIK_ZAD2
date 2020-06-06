@@ -196,17 +196,17 @@ void ClientManager::handleConnections(int *finish) {
     closeSockets();
 }
 
-void ClientManager::updateKeepalive(double lastTime) {
+void ClientManager::updateKeepalive(int lastTime) {
     keepAliveMess->sendMessage(serverSock,
         userInterface->getPickedRadioAddr());
     updateTimeouts(lastTime);
     keepaliveTimeout = KEEPALIVE_TIMEOUT;
 }
 
-void ClientManager::updateTimeouts(double lastTime) {
-    double timeDifference = getCurrTime() - lastTime;
-    radioCurrTimeout = std::max(0.0, radioCurrTimeout - timeDifference);
-    keepaliveTimeout = std::max(0.0, keepaliveTimeout - timeDifference);
+void ClientManager::updateTimeouts(int lastTime) {
+    int timeDifference = getCurrTime() - lastTime;
+    radioCurrTimeout = std::max(0, radioCurrTimeout - timeDifference);
+    keepaliveTimeout = std::max(0, keepaliveTimeout - timeDifference);
 }
 
 userAction ClientManager::handleTelnetInput() {

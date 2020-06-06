@@ -41,7 +41,7 @@ class ServerManager {
     int clientSock;
     int clientTimeout;
     int radioTimeout;
-    int radioTimestamp;
+    int radioCurrTimeout;
     struct ip_mreq ip_mreq;
     ClientsMap clients;
     Message *radioAudio;
