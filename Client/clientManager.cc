@@ -125,7 +125,7 @@ void ClientManager::makeTelnetSetup() {
 void ClientManager::handleConnections(int *finish) {
     userAction userAction;
     int pollWaitTime, ret, updateInterface;
-    double startPollTime;
+    int startPollTime;
 
     while (!(*finish)) {
         pollWaitTime = userInterface->getPicked() ?
@@ -188,8 +188,10 @@ void ClientManager::handleConnections(int *finish) {
             }
         }
 
-        if (userAction != VOID || updateInterface) {
-            if (!userInterface->sendInterface()) handleTelnetError();
+        if (fds[1].fd != -1 && (userAction != VOID || updateInterface)) {
+            if (!userInterface->sendInterface()) {
+                handleTelnetError();
+            }
         }
     }
 
@@ -308,7 +310,7 @@ int ClientManager::getCurrTime() {
     struct timeval time;
     gettimeofday(&time, NULL);
 
-    return (int) (time.tv_sec + (double)time.tv_usec * .000001) * 1000;
+    return (int) (time.tv_sec + time.tv_usec * .000001) * 1000;
 }
 
 

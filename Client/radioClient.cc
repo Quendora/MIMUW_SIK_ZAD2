@@ -8,6 +8,7 @@ void handleSigInt(__attribute__((unused)) int s) {
 
 int main(int argc, char *argv[]) {
     signal(SIGINT, handleSigInt);
+    signal(SIGPIPE, SIG_IGN);
 
     std::shared_ptr<ParserClient> parser = std::make_shared<ParserClient>();
     if (parser->parseInput(argc, argv) == -1) fatal("Wrong parameters");

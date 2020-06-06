@@ -273,7 +273,7 @@ int ServerManager::getCurrTime() {
     struct timeval time;
     gettimeofday(&time, NULL);
 
-    return (int) (time.tv_sec + (double)time.tv_usec * .000001) * 1000;
+    return (int) (time.tv_sec + time.tv_usec * .000001) * 1000;
 }
 
 void ServerManager::handleError() {
