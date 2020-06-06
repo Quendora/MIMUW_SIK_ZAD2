@@ -1,4 +1,5 @@
 #include <sys/time.h>
+#include <cerrno>
 
 #include "clientManager.h"
 
